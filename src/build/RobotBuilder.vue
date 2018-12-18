@@ -1,9 +1,11 @@
 <template>   
-<div>
+<div class="content">
+    <button class="add-to-cart" @click="addToCart()">Add to cart</button>
     <div class="top-row">
       <div class="top part">
           <div class="robot-name">
               {{selectedRobot.head.title}}
+              <span v-if="selectedRobot.head.onSale" class="sale">Sale!</span>
           </div>
         <img :src="selectedRobot.head.src" title="head"/>
         <button @click="selectPrevHead()" class="prev-selector">&#9668;</button>
@@ -14,7 +16,7 @@
       <div class="left part">
         <img :src="selectedRobot.leftHand.src" title="left arm"/>
         <button @click="selectPrevLeftHand()" class="prev-selector">&#9650;</button>
-        <button @click="selectNextLeftHand()" class="next-selector">&#9660;</button>
+        <button @click="selectNextLeftHand()" class="next-selector">&#9660;</button>    
       </div>
       <div class="center part">
         <img :src="selectedRobot.torso.src" title="center"/>
@@ -32,9 +34,26 @@
         <img :src="selectedRobot.base.src" title="base"/>
         <button @click="selectPrevBase()" class="prev-selector">&#9668;</button>
         <button @click="selectNextBase()" class="next-selector">&#9658;</button>
-      </div>
+      </div>     
     </div>
-  </div> 
+    <div>
+          <h1>Cart</h1>
+          <table>
+              <thead>
+                  <tr>
+                      <th>Robot</th>
+                      <th>Cost</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr v-for="(robot, index) in cart" :key="index">
+                    <td>{{robot.head.title}}</td>
+                    <td>{{robot.cost}}</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>    
 </template>
 
 <script>
@@ -55,6 +74,7 @@ export default{
     data() {
         return { 
             availableParts,
+            cart: [],
             selectedHeadIndex:0,
             rightHandIndex:0,
             leftHandIndex:0,
@@ -74,6 +94,11 @@ export default{
         }
     },
     methods:{
+        addToCart(){
+            const robot = this.selectedRobot;
+            const cost = robot.head.cost + robot.leftHand.cost + robot.torso.cost + robot.rightHand.cost + robot.base.cost;
+            this.cart.push(Object.assign({}, robot, {cost}));
+        },
         selectNextHead(){           
            this.selectedHeadIndex = getNextValidIndex(this.selectedHeadIndex, availableParts.heads.length);
         },
@@ -202,5 +227,18 @@ export default{
     top: -25px;
     text-align: center;
     width: 100%;
+}
+.sale{
+    color:red;
+}
+.content{
+    position: relative;
+}
+.add-to-cart{
+    position: absolute;
+    right: 30px;
+    width: 220px;
+    padding: 3px;
+    font-size: 16px;     
 }
 </style>
