@@ -2,38 +2,28 @@
 <div class="content">
     <button class="add-to-cart" @click="addToCart()">Add to cart</button>
     <div class="top-row">
-      <div class="top part">
+      <div class="top part" :class="saleBorderClass">
           <div class="robot-name">
               {{selectedRobot.head.title}}
               <span v-if="selectedRobot.head.onSale" class="sale">Sale!</span>
           </div>
-        <img :src="selectedRobot.head.src" title="head"/>
-        <button @click="selectPrevHead()" class="prev-selector">&#9668;</button>
-        <button @click="selectNextHead()" class="next-selector">&#9658;</button>
+       <PartSelector :parts="availableParts.heads"/>
       </div>
     </div>
     <div class="middle-row">
       <div class="left part">
-        <img :src="selectedRobot.leftHand.src" title="left arm"/>
-        <button @click="selectPrevLeftHand()" class="prev-selector">&#9650;</button>
-        <button @click="selectNextLeftHand()" class="next-selector">&#9660;</button>    
+        <PartSelector :parts="availableParts.arms"/>
       </div>
       <div class="center part">
-        <img :src="selectedRobot.torso.src" title="center"/>
-        <button @click="selectPrevTorso()" class="prev-selector">&#9668;</button>
-        <button @click="selectNextTorso()" class="next-selector">&#9658;</button>
+         <PartSelector :parts="availableParts.torsos"/>
       </div>
       <div class="right part">
-        <img :src="selectedRobot.rightHand.src" title="right arm"/>
-        <button @click="selectPrevRightHand()" class="prev-selector">&#9650;</button>
-        <button @click="selectNextRightHand()" class="next-selector">&#9660;</button>
+        <PartSelector :parts="availableParts.arms"/>
       </div>
     </div>
     <div class="bottom-row">
       <div class="bottom part">
-        <img :src="selectedRobot.base.src" title="base"/>
-        <button @click="selectPrevBase()" class="prev-selector">&#9668;</button>
-        <button @click="selectNextBase()" class="next-selector">&#9658;</button>
+        <PartSelector :parts="availableParts.bases"/>
       </div>     
     </div>
     <div>
@@ -42,13 +32,13 @@
               <thead>
                   <tr>
                       <th>Robot</th>
-                      <th>Cost</th>
+                      <th class="costt">Cost</th>
                   </tr>
               </thead>
               <tbody>
                   <tr v-for="(robot, index) in cart" :key="index">
                     <td>{{robot.head.title}}</td>
-                    <td>{{robot.cost}}</td>
+                    <td class="cost">{{robot.cost}}</td>
                   </tr>
               </tbody>
           </table>
@@ -57,40 +47,29 @@
 </template>
 
 <script>
+
 import availableParts from '../data/parts';
+import PartSelector from  './PartSelector.vue';
 
-function getPrevValidIndex(index, length){
-    const deprecatedIndex = index - 1;
-    return deprecatedIndex < 0 ? length - 1 : deprecatedIndex;
-}
-
-function getNextValidIndex(index, length){
-    const incrementIndex = index + 1;
-    return incrementIndex > length - 1 ? 0 : incrementIndex;
-}
-
-export default{
+export default {
     name: 'RobotBuilder',
+    components: { PartSelector },
     data() {
         return { 
             availableParts,
             cart: [],
-            selectedHeadIndex:0,
-            rightHandIndex:0,
-            leftHandIndex:0,
-            torsoIndex:0,
-            baseIndex:0
+            selectedRobot: {            
+                head: {},
+                leftHand: {},
+                torso: {},
+                rightHand: {},
+                base: {}
+            }              
         };
     },
-    computed:{
-        selectedRobot(){
-            return {
-                head: availableParts.heads[this.selectedHeadIndex],
-                leftHand: availableParts.arms[this.leftHandIndex],
-                torso: availableParts.torsos[this.torsoIndex],
-                rightHand: availableParts.arms[this.rightHandIndex],
-                base: availableParts.bases[this.baseIndex]
-            }
+    computed:{        
+        saleBorderClass(){
+            return this.selectedRobot.head.onSale ? 'sale-border' : '';
         }
     },
     methods:{
@@ -98,37 +77,7 @@ export default{
             const robot = this.selectedRobot;
             const cost = robot.head.cost + robot.leftHand.cost + robot.torso.cost + robot.rightHand.cost + robot.base.cost;
             this.cart.push(Object.assign({}, robot, {cost}));
-        },
-        selectNextHead(){           
-           this.selectedHeadIndex = getNextValidIndex(this.selectedHeadIndex, availableParts.heads.length);
-        },
-        selectPrevHead(){
-           this.selectedHeadIndex = getPrevValidIndex(this.selectedHeadIndex, availableParts.heads.length);
-        },
-        selectNextLeftHand(){
-            this.leftHandIndex = getNextValidIndex(this.leftHandIndex, availableParts.arms.length);
-        },
-        selectPrevLeftHand(){
-            this.leftHandIndex = getPrevValidIndex(this.leftHandIndex, availableParts.arms.length);
-        },
-        selectNextRightHand(){
-            this.rightHandIndex = getNextValidIndex(this.rightHandIndex, availableParts.arms.length)
-        },
-        selectPrevRightHand(){
-            this.rightHandIndex = getPrevValidIndex(this.rightHandIndex, availableParts.arms.length);
-        },
-        selectNextTorso(){
-            this.torsoIndex = getNextValidIndex(this.torsoIndex, availableParts.torsos.length);
-        },
-        selectPrevTorso(){
-            this.torsoIndex = getPrevValidIndex(this.torsoIndex, availableParts.torsos.length);
-        },
-        selectNextBase(){
-            this.baseIndex = getNextValidIndex(this.baseIndex, availableParts.bases.length);
-        },        
-        selectPrevBase(){ 
-            this.baseIndex = getPrevValidIndex(this.baseIndex, availableParts.bases.length)
-        },
+        }        
     }
 };
 </script>
@@ -240,5 +189,16 @@ export default{
     width: 220px;
     padding: 3px;
     font-size: 16px;     
+}
+td, th{
+    text-align: left;
+    padding: 5px;
+    padding-right: 20px;
+}
+.cost{
+    text-align: right;
+}
+.sale-border{
+    border: 2px solid red;
 }
 </style>
