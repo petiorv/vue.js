@@ -7,23 +7,23 @@
               {{selectedRobot.head.title}}
               <span v-if="selectedRobot.head.onSale" class="sale">Sale!</span>
           </div>
-       <PartSelector :parts="availableParts.heads"/>
+       <PartSelector :parts="availableParts.heads" @partSelected = "part => selectedRobot.head = part"/>
       </div>
     </div>
     <div class="middle-row">
       <div class="left part">
-        <PartSelector :parts="availableParts.arms"/>
+        <PartSelector :parts="availableParts.arms" @partSelected = "part => selectedRobot.leftHand = part"/>
       </div>
       <div class="center part">
-         <PartSelector :parts="availableParts.torsos"/>
+         <PartSelector :parts="availableParts.torsos" @partSelected = "part => selectedRobot.torso = part"/>
       </div>
       <div class="right part">
-        <PartSelector :parts="availableParts.arms"/>
+        <PartSelector :parts="availableParts.arms" @partSelected = "part => selectedRobot.rightHand = part"/>
       </div>
     </div>
     <div class="bottom-row">
       <div class="bottom part">
-        <PartSelector :parts="availableParts.bases"/>
+        <PartSelector :parts="availableParts.bases" @partSelected = "part => selectedRobot.base = part"/>
       </div>     
     </div>
     <div>
@@ -67,7 +67,7 @@ export default {
             }              
         };
     },
-    computed:{        
+    computed:{ 
         saleBorderClass(){
             return this.selectedRobot.head.onSale ? 'sale-border' : '';
         }
