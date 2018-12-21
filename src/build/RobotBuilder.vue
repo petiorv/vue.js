@@ -1,5 +1,20 @@
 <template>   
 <div class="content">
+      <!-- <div class="preview">
+      <div class="preview-content">
+        <div class="top-row">
+          <img :src="selectedRobot.head.src"/>
+        </div>
+        <div class="middle-row">
+          <img :src="selectedRobot.leftArm.src" class="rotate-left"/>
+          <img :src="selectedRobot.torso.src"/>
+          <img :src="selectedRobot.rightArm.src" class="rotate-right"/>
+        </div>
+        <div class="bottom-row">
+          <img :src="selectedRobot.base.src"/>
+        </div>
+      </div>
+    </div>  -->
     <button class="add-to-cart" @click="addToCart()">Add to cart</button>
     <div class="top-row">
       <div class="top part" :class="saleBorderClass">
@@ -49,6 +64,7 @@
 <script>
 
 import availableParts from '../data/parts';
+import createdHookMixin from './created-hook-mixin';
 import PartSelector from  './PartSelector.vue';
 
 export default {
@@ -67,6 +83,7 @@ export default {
             }              
         };
     },
+    mixins: [createdHookMixin],
     computed:{ 
         saleBorderClass(){
             return this.selectedRobot.head.onSale ? 'sale-border' : '';
@@ -75,7 +92,7 @@ export default {
     methods:{
         addToCart(){
             const robot = this.selectedRobot;
-            const cost = robot.head.cost + robot.leftHand.cost + robot.torso.cost + robot.rightHand.cost + robot.base.cost;
+            const cost = robot.head.cost + robot.leftHand.cost + robot.torso.cost + robot.rightHand.cost + robot.base.cost;            
             this.cart.push(Object.assign({}, robot, {cost}));
         }        
     }
@@ -200,5 +217,26 @@ td, th{
 }
 .sale-border{
     border: 2px solid red;
+}
+.preview {
+  position: absolute;
+  top: -20px;
+  right: 0;
+  width: 210px;
+  height: 210px;
+  padding: 5px;
+}
+.preview-content {
+  border: 1px solid #999;
+}
+.preview img {
+  width: 50px;
+  height: 50px;
+}
+.rotate-right {
+  transform: rotate(90deg);
+}
+.rotate-left {
+  transform: rotate(-90deg);
 }
 </style>
