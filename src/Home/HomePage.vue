@@ -4,6 +4,9 @@
         <img class="robot" src="../assets/robot.png">
       </div>
       <h1>Hello</h1>
+      <div>
+        <router-link to="/build">Get started</router-link> building your first robot!
+      </div>
   </div>
 </template>
 
