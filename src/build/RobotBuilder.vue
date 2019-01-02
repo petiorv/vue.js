@@ -1,47 +1,58 @@
 <template>   
 <div class="content">
-      <!-- <div class="preview">
-      <div class="preview-content">
-        <div class="top-row">
-          <img :src="selectedRobot.head.src"/>
-        </div>
-        <div class="middle-row">
-          <img :src="selectedRobot.leftArm.src" class="rotate-left"/>
-          <img :src="selectedRobot.torso.src"/>
-          <img :src="selectedRobot.rightArm.src" class="rotate-right"/>
-        </div>
-        <div class="bottom-row">
-          <img :src="selectedRobot.base.src"/>
-        </div>
-      </div>
-    </div>  -->
-    <button class="add-to-cart" @click="addToCart()">Add to cart</button>
+      <div class="preview">
+        <CollapsibleSection>
+            <div class="preview-content">
+                <div class="top-row">
+                    <img :src="selectedRobot.head.src"/>
+                    </div>
+                    <div class="middle-row">
+                    <img :src="selectedRobot.leftArm.src" class="rotate-left"/>
+                    <img :src="selectedRobot.torso.src"/>
+                    <img :src="selectedRobot.rightArm.src" class="rotate-right"/>
+                    </div>
+                    <div class="bottom-row">
+                    <img :src="selectedRobot.base.src"/>
+                </div>
+              </div>
+        </CollapsibleSection>
+        <button class="add-to-cart" @click="addToCart()">Add to cart</button>
+    </div>
     <div class="top-row">
-      <div class="top part" :class="saleBorderClass">
+      <!-- <div class="top part" :class="saleBorderClass">
           <div class="robot-name">
-              {{selectedRobot.head.title}}
+              {{selectedRobot.head.title}} 
               <span v-if="selectedRobot.head.onSale" class="sale">Sale!</span>
           </div>
-       <PartSelector :parts="availableParts.heads" @partSelected = "part => selectedRobot.head = part"/>
-      </div>
+      </div> -->
+         <PartSelector 
+         :parts="availableParts.heads" 
+         position="top" 
+         @partSelected = "part => this.selectedRobot.head = part"/>
     </div>
     <div class="middle-row">
-      <div class="left part">
-        <PartSelector :parts="availableParts.arms" @partSelected = "part => selectedRobot.leftHand = part"/>
-      </div>
-      <div class="center part">
-         <PartSelector :parts="availableParts.torsos" @partSelected = "part => selectedRobot.torso = part"/>
-      </div>
-      <div class="right part">
-        <PartSelector :parts="availableParts.arms" @partSelected = "part => selectedRobot.rightHand = part"/>
-      </div>
+        <PartSelector 
+            :parts="availableParts.arms"
+            position="left"
+            @partSelected = "part => this.selectedRobot.leftArm = part"/>
+      
+         <PartSelector 
+            :parts="availableParts.torsos"
+            position="center" 
+            @partSelected = "part => this.selectedRobot.torso = part"/>
+      
+        <PartSelector 
+            :parts="availableParts.arms" 
+            position="right"
+            @partSelected = " part => this.selectedRobot.rightArm = part"/>     
     </div>
     <div class="bottom-row">
-      <div class="bottom part">
-        <PartSelector :parts="availableParts.bases" @partSelected = "part => selectedRobot.base = part"/>
-      </div>     
-    </div>
-    <div>
+        <PartSelector 
+            :parts="availableParts.bases" 
+            position="bottom"
+            @partSelected = "part => this.selectedRobot.base = part"/>
+     </div>
+        <div>
           <h1>Cart</h1>
           <table>
               <thead>
@@ -57,7 +68,7 @@
                   </tr>
               </tbody>
           </table>
-      </div>
+         </div>
   </div>    
 </template>
 
@@ -66,19 +77,20 @@
 import availableParts from '../data/parts';
 import createdHookMixin from './created-hook-mixin';
 import PartSelector from  './PartSelector.vue';
+import CollapsibleSection from '../shared/CollapsibleSection.vue';
 
 export default {
     name: 'RobotBuilder',
-    components: { PartSelector },
+    components: { PartSelector, CollapsibleSection },
     data() {
         return { 
             availableParts,
             cart: [],
             selectedRobot: {            
                 head: {},
-                leftHand: {},
+                leftArm: {},
                 torso: {},
-                rightHand: {},
+                rightArm: {},
                 base: {}
             }              
         };
@@ -92,9 +104,9 @@ export default {
     methods:{
         addToCart(){
             const robot = this.selectedRobot;
-            const cost = robot.head.cost + robot.leftHand.cost + robot.torso.cost + robot.rightHand.cost + robot.base.cost;            
+            const cost = robot.head.cost + robot.leftArm.cost + robot.torso.cost + robot.rightArm.cost + robot.base.cost;            
             this.cart.push(Object.assign({}, robot, {cost}));
-        }        
+        },
     }
 };
 </script>
@@ -201,9 +213,8 @@ export default {
     position: relative;
 }
 .add-to-cart{
-    position: absolute;
-    right: 30px;
-    width: 220px;
+    position: absolute;    
+    width: 210px;
     padding: 3px;
     font-size: 16px;     
 }
