@@ -51,24 +51,7 @@
             :parts="availableParts.bases" 
             position="bottom"
             @partSelected = "part => this.selectedRobot.base = part"/>
-     </div>
-        <div>
-          <h1>Cart</h1>
-          <table>
-              <thead>
-                  <tr>
-                      <th>Robot</th>
-                      <th class="costt">Cost</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr v-for="(robot, index) in cart" :key="index">
-                    <td>{{robot.head.title}}</td>
-                    <td class="cost">{{robot.cost}}</td>
-                  </tr>
-              </tbody>
-          </table>
-         </div>
+     </div>        
   </div>    
 </template>
 
@@ -81,10 +64,19 @@ import CollapsibleSection from '../shared/CollapsibleSection.vue';
 
 export default {
     name: 'RobotBuilder',
+    beforeRouteLeave(to, from, next){
+        if(this.addedToCart){
+            next(true);
+        } else{
+          const response = confirm('You have not added your robot to cart, are you sure you want to leave?')
+          next(response);
+        }
+    },
     components: { PartSelector, CollapsibleSection },
     data() {
         return { 
             availableParts,
+            addedToCart: false,
             cart: [],
             selectedRobot: {            
                 head: {},
@@ -104,8 +96,9 @@ export default {
     methods:{
         addToCart(){
             const robot = this.selectedRobot;
-            const cost = robot.head.cost + robot.leftArm.cost + robot.torso.cost + robot.rightArm.cost + robot.base.cost;            
-            this.cart.push(Object.assign({}, robot, {cost}));
+            const cost = robot.head.cost + robot.leftArm.cost + robot.torso.cost + robot.rightArm.cost + robot.base.cost;       
+            this.$store.commit('addRobotToCart', Object.assign({}, robot, {cost}));   
+            this.addedToCart = true;
         },
     }
 };
@@ -217,14 +210,6 @@ export default {
     width: 210px;
     padding: 3px;
     font-size: 16px;     
-}
-td, th{
-    text-align: left;
-    padding: 5px;
-    padding-right: 20px;
-}
-.cost{
-    text-align: right;
 }
 .sale-border{
     border: 2px solid red;

@@ -12,18 +12,34 @@
            <li class="nav-item">
             <router-link class="nav-link" :to="{ name: 'BrowseParts' }" exact>Browse Parts</router-link>
           </li>
+           <li class="nav-item cart">
+            <router-link class="nav-link" to="/cart" exact>Cart</router-link>
+            <div class="cart-items">
+              {{cart.length}}
+            </div>
+          </li>
         </ul>
       </nav>
     </header>
-    <main>    
-    <router-view/>
-    </main>
+    <div class="container"> 
+      <aside class="aside">
+        <router-view name="sidebar" />
+      </aside>
+      <main>    
+        <router-view/>
+      </main>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'app',  
+  computed: {
+    cart(){
+      return this.$store.state.cart;
+    }
+  }  
 }
 </script>
 
@@ -36,16 +52,15 @@ body{
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   
 }
-main{
-  margin: 0 auto;
+main{ 
   padding: 30px;
   background-color: white;
-  width: 1024px;
+  width: 964px;
   min-height: 300px;
 }
 header {
   background-color: #999;
-  width: 1084px;
+  width: 1184px;
   margin: 0 auto;
 }
 ul {
@@ -68,5 +83,34 @@ ul {
 }
 .router-link-active{
   color:white;
+}
+
+.container {
+  display: flex;
+  margin:  10px auto 0 auto 0;
+  justify-content: center;
+}
+.aside{
+  padding: 30px;
+  background-color: #aaa;
+  width: 100px;
+  min-height: 300px;
+}
+
+.nav-item.cart{
+  position: relative;
+  margin-left: auto;
+  border-right: none;
+}
+.cart-items{
+  position: absolute;
+  top: -5px;
+  right: -9px;
+  font-size: 18px;
+  width: 20px;
+  text-align: center;
+  display: inline-block;
+  border-radius: 100px;
+  background-color: mediumseagreen;
 }
 </style>
